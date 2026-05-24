@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BILLY'S SHIRTS 🏭</title>
+    <title>NEON DASH ⚡ • Ray-Ban</title>
     <style>
         :root { font-size: 20px; }
         * { margin:0; padding:0; box-sizing:border-box; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #111;
-            color: #ff0;
+            background: #000;
+            color: #0ff;
             height: 100vh;
             overflow: hidden;
             display: flex;
@@ -22,36 +22,42 @@
             width: 100%;
             text-align: center;
             padding: 14px;
-            background: linear-gradient(90deg, #ff0, #f60, #ff0);
+            background: linear-gradient(90deg, #0ff, #f0f, #0ff);
             color: #000;
-            font-size: 1.7rem;
+            font-size: 1.65rem;
             font-weight: 700;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
         }
         #game-container {
             position: relative;
             margin: 12px;
-            border: 5px solid #ff0;
+            border: 5px solid #0ff;
             border-radius: 20px;
-            box-shadow: 0 0 50px #ff0;
+            box-shadow: 0 0 50px #0ff, inset 0 0 40px rgba(0,255,255,0.2);
             overflow: hidden;
         }
-        canvas { display: block; background: #1a1a1a; }
+        canvas {
+            display: block;
+            image-rendering: pixelated;
+            background: #0a0a14;
+        }
         .overlay {
-            position: absolute; top: 50%; left: 50%;
+            position: absolute;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(20,20,30,0.95);
+            background: rgba(10,10,30,0.95);
             padding: 32px 40px;
             border-radius: 18px;
-            border: 4px solid #ff0;
+            border: 4px solid #0ff;
             text-align: center;
             display: none;
             flex-direction: column;
             gap: 18px;
             min-width: 300px;
+            box-shadow: 0 0 60px #0ff;
         }
         button {
-            background: linear-gradient(135deg, #ff0, #f60);
+            background: linear-gradient(135deg, #0ff, #f0f);
             color: #000;
             border: none;
             padding: 18px 36px;
@@ -61,14 +67,58 @@
             cursor: pointer;
             min-height: 64px;
         }
-        .score { position: absolute; top: 20px; left: 20px; background: rgba(0,0,0,0.75); padding: 10px 22px; border-radius: 999px; font-size: 1.3rem; font-weight: 700; color: #ff0; border: 3px solid #ff0; }
-        .highscore { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.75); padding: 8px 18px; border-radius: 999px; font-size: 1.05rem; color: #0ff; }
-        .milestone { position: absolute; top: 80px; left: 50%; transform: translateX(-50%); background: rgba(255,240,0,0.3); color: #ff0; padding: 8px 24px; border-radius: 999px; font-size: 1.4rem; font-weight: 700; border: 2px solid #ff0; opacity: 0; transition: opacity 0.4s; }
-        .instructions { position: absolute; bottom: 20px; text-align: center; font-size: 1rem; color: #aaa; width: 100%; }
+        button:active { transform: scale(0.96); }
+        .score {
+            position: absolute;
+            top: 20px; left: 20px;
+            background: rgba(0,0,0,0.75);
+            padding: 10px 22px;
+            border-radius: 999px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #0ff;
+            border: 3px solid #0ff;
+            text-shadow: 0 0 10px #0ff;
+        }
+        .highscore {
+            position: absolute;
+            top: 20px; right: 20px;
+            background: rgba(0,0,0,0.75);
+            padding: 8px 18px;
+            border-radius: 999px;
+            font-size: 1.05rem;
+            color: #ff0;
+        }
+        .milestone {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,255,255,0.2);
+            color: #0ff;
+            padding: 8px 24px;
+            border-radius: 999px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-shadow: 0 0 15px #0ff;
+            border: 2px solid #0ff;
+            opacity: 0;
+            transition: opacity 0.4s;
+            pointer-events: none;
+        }
+        .instructions {
+            position: absolute;
+            bottom: 20px;
+            text-align: center;
+            font-size: 1rem;
+            color: #0aa;
+            width: 100%;
+            text-shadow: 0 0 8px #0ff;
+        }
     </style>
 </head>
 <body>
-    <header>BILLY'S SHIRTS 🏭</header>
+    <header>NEON DASH ⚡</header>
     
     <div id="game-container">
         <div class="score" id="score">0m</div>
@@ -77,15 +127,15 @@
         <canvas id="canvas" width="520" height="520"></canvas>
         
         <div id="overlay" class="overlay">
-            <h2 id="title">BILLY'S SHIRTS</h2>
-            <div id="subtitle" style="color:#ff0; font-size:1.5rem;"></div>
-            <button onclick="startGame()">START RUN!</button>
+            <h2 id="title">NEON DASH</h2>
+            <div id="subtitle" style="color:#0ff; font-size:1.5rem;"></div>
+            <button onclick="startGame()">RUN!</button>
         </div>
     </div>
 
     <div class="instructions">
         ↑ JUMP &nbsp;&nbsp;&nbsp; ← → CHANGE LANE &nbsp;&nbsp;&nbsp; SPACE = PAUSE<br>
-        <span style="color:#0f0">Collect T-Shirts • Avoid factory hazards</span>
+        <span style="color:#0f0">Collect orbs • Survive the neon grid</span>
     </div>
 
     <script>
@@ -98,264 +148,325 @@
         const title = document.getElementById('title');
         const subtitle = document.getElementById('subtitle');
 
+        // Web Audio API
         let audioContext;
         function initAudio() {
-            if (!audioContext) audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            if (!audioContext) {
+                audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            }
         }
 
         function playSound(type) {
             initAudio();
             const now = audioContext.currentTime;
+
             switch(type) {
                 case 'jump':
-                    const o = audioContext.createOscillator();
-                    o.type = 'sine'; o.frequency.setValueAtTime(520, now);
-                    o.frequency.exponentialRampToValueAtTime(920, now + 0.3);
-                    const g = audioContext.createGain();
-                    g.gain.setValueAtTime(0.5, now); g.gain.exponentialRampToValueAtTime(0.001, now + 0.4);
-                    o.connect(g).connect(audioContext.destination);
-                    o.start(now); o.stop(now + 0.45);
+                    const osc1 = audioContext.createOscillator();
+                    osc1.type = 'sawtooth';
+                    osc1.frequency.setValueAtTime(420, now);
+                    osc1.frequency.exponentialRampToValueAtTime(820, now + 0.25);
+                    const gain1 = audioContext.createGain();
+                    gain1.gain.setValueAtTime(0.4, now);
+                    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+                    osc1.connect(gain1).connect(audioContext.destination);
+                    osc1.start(now);
+                    osc1.stop(now + 0.4);
                     break;
+
                 case 'collect':
-                    const notes = [720, 920, 1240];
-                    notes.forEach((f,i) => setTimeout(() => {
-                        const osc = audioContext.createOscillator();
-                        osc.type = 'triangle'; osc.frequency.value = f;
-                        const gain = audioContext.createGain();
-                        gain.gain.setValueAtTime(0.4, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
-                        osc.connect(gain).connect(audioContext.destination);
-                        osc.start(now + i*0.04); osc.stop(now + i*0.04 + 0.5);
-                    }, i*35));
+                    const notes = [880, 1100, 1380];
+                    notes.forEach((freq, i) => {
+                        setTimeout(() => {
+                            const osc = audioContext.createOscillator();
+                            osc.type = 'sine';
+                            osc.frequency.value = freq;
+                            const gain = audioContext.createGain();
+                            gain.gain.setValueAtTime(0.35, now + i*0.05);
+                            gain.gain.exponentialRampToValueAtTime(0.001, now + i*0.05 + 0.4);
+                            osc.connect(gain).connect(audioContext.destination);
+                            osc.start(now + i*0.05);
+                            osc.stop(now + i*0.05 + 0.5);
+                        }, i * 30);
+                    });
                     break;
+
                 case 'crash':
                     const noise = audioContext.createBufferSource();
-                    const buf = audioContext.createBuffer(1, audioContext.sampleRate * 0.9, audioContext.sampleRate);
-                    const data = buf.getChannelData(0);
-                    for (let i = 0; i < buf.length; i++) data[i] = Math.random() * 2 - 1;
-                    noise.buffer = buf;
+                    const buffer = audioContext.createBuffer(1, audioContext.sampleRate * 1.2, audioContext.sampleRate);
+                    const data = buffer.getChannelData(0);
+                    for (let i = 0; i < buffer.length; i++) data[i] = Math.random() * 2 - 1;
+                    noise.buffer = buffer;
+
                     const filter = audioContext.createBiquadFilter();
-                    filter.type = 'lowpass'; filter.frequency.setValueAtTime(1200, now);
+                    filter.type = 'lowpass';
+                    filter.frequency.setValueAtTime(800, now);
+                    filter.frequency.exponentialRampToValueAtTime(120, now + 1.1);
+
                     const gain = audioContext.createGain();
-                    gain.gain.setValueAtTime(1.1, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 1);
+                    gain.gain.setValueAtTime(1.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+
                     noise.connect(filter).connect(gain).connect(audioContext.destination);
                     noise.start(now);
+                    break;
+
+                case 'milestone':
+                    const sweep = audioContext.createOscillator();
+                    sweep.type = 'sine';
+                    sweep.frequency.setValueAtTime(600, now);
+                    sweep.frequency.exponentialRampToValueAtTime(1600, now + 0.8);
+                    const g = audioContext.createGain();
+                    g.gain.setValueAtTime(0.5, now);
+                    g.gain.exponentialRampToValueAtTime(0.001, now + 1.1);
+                    sweep.connect(g).connect(audioContext.destination);
+                    sweep.start(now);
+                    sweep.stop(now + 1.2);
                     break;
             }
         }
 
         let player = { lane: 1, y: 0, vy: 0, jumping: false };
         let obstacles = [];
-        let shirts = [];           // collectables
-        let powerups = [];         // special shirts
+        let collectibles = [];
         let particles = [];
         let distance = 0;
         let speed = 6.2;
         let gameRunning = false;
         let paused = false;
         let gameInterval;
-        let highScore = localStorage.getItem('billyShirtsHigh') || 0;
+        let highScore = localStorage.getItem('neonDashHigh') || 0;
         let combo = 0;
+        let lastComboTime = 0;
         let shakeAmount = 0;
+        let shakeDecay = 0.9;
 
         const LANES = [120, 260, 400];
 
         class Particle {
-            constructor(x, y, color) {
+            constructor(x, y, color, size = 5, life = 40) {
                 this.x = x; this.y = y;
-                this.vx = (Math.random() - 0.5) * 11;
-                this.vy = (Math.random() - 0.5) * 11 - 2;
-                this.life = 38; this.maxLife = 38;
-                this.color = color; this.size = 4 + Math.random() * 5;
+                this.vx = (Math.random() - 0.5) * 12;
+                this.vy = (Math.random() - 0.5) * 12 - 3;
+                this.life = life; this.maxLife = life;
+                this.color = color; this.size = size;
+                this.gravity = 0.28; this.friction = 0.96;
             }
-            update() { this.x += this.vx; this.y += this.vy; this.vy += 0.25; this.life--; this.size *= 0.97; }
+            update() {
+                this.vx *= this.friction;
+                this.vy += this.gravity;
+                this.x += this.vx; this.y += this.vy;
+                this.life--; this.size *= 0.975;
+            }
             draw() {
-                ctx.globalAlpha = this.life / this.maxLife;
+                const alpha = this.life / this.maxLife;
+                ctx.globalAlpha = alpha * 0.95;
                 ctx.fillStyle = this.color;
-                ctx.shadowBlur = 15; ctx.shadowColor = this.color;
-                ctx.fillRect(this.x, this.y, this.size, this.size);
+                ctx.shadowBlur = 18; ctx.shadowColor = this.color;
+                ctx.fillRect(this.x - this.size/2, this.y - this.size/2, this.size, this.size);
             }
         }
 
-        function createExplosion(x, y, color, count = 40) {
-            for (let i = 0; i < count; i++) particles.push(new Particle(x, y, color));
+        function createExplosion(x, y, color, count = 45, force = 1) {
+            for (let i = 0; i < count; i++) {
+                const size = 3 + Math.random() * 7;
+                const life = 25 + Math.random() * 45;
+                const p = new Particle(x, y, color, size, life);
+                p.vx *= force; p.vy *= force * 0.8;
+                particles.push(p);
+            }
+        }
+
+        function createSparkBurst(x, y, color, count = 18) {
+            for (let i = 0; i < count; i++) {
+                const p = new Particle(x, y, color, 2.5, 22);
+                p.vy -= 4 + Math.random() * 6;
+                p.gravity = 0.15;
+                particles.push(p);
+            }
+        }
+
+        function showMilestone(text) {
+            milestoneEl.textContent = text;
+            milestoneEl.style.opacity = 1;
+            playSound('milestone');
+            setTimeout(() => milestoneEl.style.opacity = 0, 1800);
         }
 
         function spawnObstacle() {
-            if (Math.random() < 0.6) {
-                obstacles.push({ lane: Math.floor(Math.random() * 3), x: 520, type: Math.random() < 0.5 ? 'box' : 'machine' });
+            if (Math.random() < 0.65) {
+                obstacles.push({ lane: Math.floor(Math.random() * 3), x: 520, height: 55 + Math.random() * 45 });
             }
         }
 
-        function spawnShirt() {
-            if (Math.random() < 0.5) {
-                shirts.push({ lane: Math.floor(Math.random() * 3), x: 520, color: ['#f00','#0f0','#00f','#ff0'][Math.floor(Math.random()*4)] });
-            }
-        }
-
-        function spawnPowerup() {
-            if (Math.random() < 0.18) {
-                powerups.push({ lane: Math.floor(Math.random() * 3), x: 520, type: Math.random() < 0.5 ? 'speed' : 'shield' });
+        function spawnCollectible() {
+            if (Math.random() < 0.45) {
+                collectibles.push({ lane: Math.floor(Math.random() * 3), x: 520, collected: false });
             }
         }
 
         function drawBackground() {
-            ctx.fillStyle = '#1a1a1a'; ctx.fillRect(0, 0, 520, 520);
-            // Conveyor belts
-            ctx.fillStyle = '#333';
-            ctx.fillRect(0, 380, 520, 80);
-            ctx.strokeStyle = '#666'; ctx.lineWidth = 12;
-            for (let i = -100; i < 700; i += 90) {
-                const off = (Date.now() / 8 % 90);
+            const grad = ctx.createLinearGradient(0, 0, 0, 520);
+            grad.addColorStop(0, '#1a0033'); grad.addColorStop(1, '#000011');
+            ctx.fillStyle = grad; ctx.fillRect(0, 0, 520, 520);
+
+            ctx.strokeStyle = '#0ff'; ctx.lineWidth = 5;
+            const offset = (Date.now() / 6) % 120;
+            for (let i = -100; i < 700; i += 70) {
                 ctx.beginPath();
-                ctx.moveTo(i + off, 410);
-                ctx.lineTo(i + off + 60, 410);
+                ctx.moveTo(i + offset - 100, 410);
+                ctx.lineTo(i + offset + 120, 410);
                 ctx.stroke();
             }
+
+            ctx.strokeStyle = '#f0f'; ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.moveTo(55, 0); ctx.lineTo(55, 520);
+            ctx.moveTo(465, 0); ctx.lineTo(465, 520);
+            ctx.stroke();
         }
 
         function drawPlayer() {
             const x = LANES[player.lane];
             const y = 340 + player.y;
-            ctx.shadowBlur = 25; ctx.shadowColor = '#ff0';
-            // Billy body
-            ctx.fillStyle = '#28a'; ctx.fillRect(x - 22, y - 48, 44, 52);
-            // Head
-            ctx.fillStyle = '#fdb'; ctx.beginPath(); ctx.arc(x, y - 62, 16, 0, Math.PI * 2); ctx.fill();
-            // Hat
-            ctx.fillStyle = '#f00'; ctx.fillRect(x - 19, y - 78, 38, 12);
+            ctx.shadowBlur = 35; ctx.shadowColor = '#0ff';
+            ctx.fillStyle = '#0ff'; ctx.fillRect(x - 24, y - 52, 48, 58);
+            ctx.fillStyle = '#ff0'; ctx.beginPath(); ctx.arc(x, y - 68, 19, 0, Math.PI * 2); ctx.fill();
+            ctx.fillStyle = '#f0f'; ctx.fillRect(x - 15, y - 75, 30, 9);
         }
 
         function drawObstacles() {
-            obstacles.forEach(o => {
-                const x = o.x;
-                if (o.type === 'box') {
-                    ctx.fillStyle = '#842'; ctx.fillRect(x - 30, 340, 60, 65);
-                    ctx.fillStyle = '#ff0'; ctx.fillRect(x - 25, 350, 50, 8);
-                } else {
-                    ctx.fillStyle = '#555'; ctx.fillRect(x - 35, 310, 70, 110);
-                    ctx.fillStyle = '#f00'; ctx.fillRect(x - 28, 325, 56, 20);
-                }
+            ctx.shadowBlur = 25; ctx.shadowColor = '#f44';
+            obstacles.forEach(obs => {
+                const x = obs.x;
+                ctx.fillStyle = '#f44'; ctx.fillRect(x - 32, 340, 64, obs.height);
+                ctx.fillStyle = '#ff0'; ctx.fillRect(x - 37, 330, 74, 12);
             });
         }
 
-        function drawShirts() {
-            shirts.forEach(s => {
-                if (s.collected) return;
-                const x = s.x;
-                ctx.fillStyle = s.color;
-                ctx.fillRect(x - 18, 250, 36, 28);           // shirt body
-                ctx.fillStyle = '#fff';
-                ctx.fillRect(x - 18, 250, 36, 8);             // collar
+        function drawCollectibles() {
+            ctx.shadowBlur = 40; ctx.shadowColor = '#ff0';
+            collectibles.forEach(c => {
+                if (c.collected) return;
+                const x = c.x;
+                ctx.fillStyle = '#ff0';
+                ctx.beginPath(); ctx.arc(x, 265, 19, 0, Math.PI * 2); ctx.fill();
+                ctx.fillStyle = '#111'; ctx.font = 'bold 22px sans-serif'; ctx.textAlign = 'center';
+                ctx.fillText('⚡', x, 273);
             });
         }
 
-        function drawPowerups() {
-            powerups.forEach(p => {
-                const x = p.x;
-                ctx.shadowBlur = 30; ctx.shadowColor = p.type === 'speed' ? '#f80' : '#0ff';
-                ctx.fillStyle = p.type === 'speed' ? '#f80' : '#0ff';
-                ctx.fillRect(x - 20, 245, 40, 32);
-                ctx.fillStyle = '#000';
-                ctx.font = 'bold 18px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText(p.type === 'speed' ? '⚡' : '🛡️', x, 268);
-            });
+        function updateParticles() {
+            for (let i = particles.length - 1; i >= 0; i--) {
+                particles[i].update();
+                if (particles[i].life <= 0) particles.splice(i, 1);
+            }
+        }
+
+        function drawParticles() {
+            particles.forEach(p => p.draw());
+            ctx.globalAlpha = 1; ctx.shadowBlur = 0;
+        }
+
+        function updateShake() {
+            if (shakeAmount > 0.5) shakeAmount *= shakeDecay;
+            else shakeAmount = 0;
         }
 
         function update() {
             if (!gameRunning || paused) return;
 
-            // Difficulty
-            if (distance > 500) speed = 7.5;
-            if (distance > 1200) speed = 9;
-            if (distance > 2200) speed = 11.5;
+            // Progressive difficulty
+            if (distance > 400) speed = 7.2;
+            if (distance > 900) speed = 8.5;
+            if (distance > 1600) speed = 10;
+            if (distance > 2800) speed = 12;
 
-            distance += speed / 3.8;
+            distance += speed / 3.5;
             scoreEl.textContent = Math.floor(distance) + 'm';
 
-            obstacles.forEach(o => o.x -= speed);
-            shirts.forEach(s => s.x -= speed);
-            powerups.forEach(p => p.x -= speed);
+            if (Math.random() < 0.35) createSparkBurst(LANES[player.lane] + (Math.random()-0.5)*20, 375 + player.y, '#0ff', 4);
 
-            obstacles = obstacles.filter(o => o.x > -80);
-            shirts = shirts.filter(s => s.x > -50);
-            powerups = powerups.filter(p => p.x > -50);
+            obstacles.forEach(o => o.x -= speed);
+            collectibles.forEach(c => c.x -= speed);
+
+            obstacles = obstacles.filter(o => o.x > -70);
+            collectibles = collectibles.filter(c => c.x > -60);
 
             if (player.jumping) {
                 player.vy += 0.85;
                 player.y += player.vy;
-                if (player.y >= 0) { player.y = 0; player.jumping = false; player.vy = 0; }
+                if (player.y >= 0) {
+                    player.y = 0; player.jumping = false; player.vy = 0;
+                    createExplosion(LANES[player.lane], 375, '#0ff', 22, 0.6);
+                }
             }
 
-            if (Math.random() < 0.14) spawnObstacle();
-            if (Math.random() < 0.48) spawnShirt();
-            if (Math.random() < 0.16) spawnPowerup();
+            if (Math.random() < 0.13) spawnObstacle();
+            if (Math.random() < 0.22) spawnCollectible();
 
             const px = LANES[player.lane];
-            // Collisions
-            obstacles.forEach(o => {
-                if (o.x < px + 32 && o.x + 55 > px - 32 && player.y > -30) {
-                    createExplosion(px, 355, '#f44', 65);
+            obstacles.forEach(obs => {
+                if (obs.x < px + 32 && obs.x + 55 > px - 32 && player.y > -25) {
+                    createExplosion(px, 340, '#f44', 70, 1.4);
+                    createExplosion(px, 340, '#ff0', 35, 0.9);
+                    shakeAmount = 22;
                     playSound('crash');
                     gameOver();
                 }
             });
 
-            shirts.forEach(s => {
-                if (!s.collected && s.x < px + 30 && s.x + 25 > px - 30 && Math.abs(player.y) < 50) {
-                    s.collected = true;
+            collectibles.forEach(c => {
+                if (!c.collected && c.x < px + 32 && c.x + 25 > px - 32 && Math.abs(player.y) < 55) {
+                    c.collected = true;
                     combo++;
-                    createExplosion(s.x, 260, s.color, 38);
+                    lastComboTime = Date.now();
+                    createExplosion(c.x, 265, '#ff0', 40, 1.1);
+                    createSparkBurst(c.x, 265, '#fff', 25);
+                    distance += 30 + combo * 8;
                     playSound('collect');
-                    distance += 25;
                 }
             });
 
-            powerups.forEach((p,i) => {
-                if (p.x < px + 30 && p.x + 30 > px - 30 && Math.abs(player.y) < 50) {
-                    powerups.splice(i,1);
-                    createExplosion(p.x, 255, p.type === 'speed' ? '#f80' : '#0ff', 45);
-                    // TODO: activate power (for now just bonus points)
-                    distance += 80;
-                }
-            });
+            if (combo > 0 && Date.now() - lastComboTime > 2000) combo = 0;
 
-            if (Math.floor(distance) % 500 === 0 && distance > 100) {
-                milestoneEl.textContent = `${Math.floor(distance)}m SHIRT STREAK!`;
-                milestoneEl.style.opacity = 1;
-                setTimeout(() => milestoneEl.style.opacity = 0, 1600);
+            if (Math.floor(distance) % 500 === 0 && Math.floor(distance) > 100) {
+                showMilestone(`${Math.floor(distance)}m CHECKPOINT`);
             }
 
-            // Particles
-            for (let i = particles.length - 1; i >= 0; i--) {
-                particles[i].update();
-                if (particles[i].life <= 0) particles.splice(i, 1);
-            }
-
+            updateParticles();
+            updateShake();
             draw();
         }
 
         function draw() {
             ctx.clearRect(0, 0, 520, 520);
+            const shakeX = (Math.random() - 0.5) * shakeAmount;
+            const shakeY = (Math.random() - 0.5) * shakeAmount;
+            
+            ctx.save();
+            ctx.translate(shakeX, shakeY);
+
             drawBackground();
             drawObstacles();
-            drawShirts();
-            drawPowerups();
+            drawCollectibles();
             drawPlayer();
+            drawParticles();
 
-            particles.forEach(p => p.draw());
+            ctx.restore();
         }
 
         function gameOver() {
             gameRunning = false;
             clearInterval(gameInterval);
+            combo = 0;
             if (distance > highScore) {
                 highScore = Math.floor(distance);
-                localStorage.setItem('billyShirtsHigh', highScore);
+                localStorage.setItem('neonDashHigh', highScore);
                 highEl.textContent = `HI ${highScore}m`;
             }
-            title.textContent = "FACTORY SHUTDOWN";
-            subtitle.innerHTML = `Billy folded ${Math.floor(distance)}m of shirts!`;
+            title.textContent = "CRASHED";
+            subtitle.innerHTML = `Distance: <b>${Math.floor(distance)}m</b>`;
             overlay.style.display = 'flex';
         }
 
@@ -363,29 +474,14 @@
             initAudio();
             overlay.style.display = 'none';
             distance = 0; speed = 6.2;
-            obstacles = []; shirts = []; powerups = []; particles = [];
+            obstacles = []; collectibles = []; particles = [];
+            shakeAmount = 0; combo = 0;
             player = { lane: 1, y: 0, vy: 0, jumping: false };
             scoreEl.textContent = '0m';
             gameRunning = true; paused = false;
             draw();
             gameInterval = setInterval(update, 1000/65);
         }
-
-        document.addEventListener('keydown', e => {
-            if (!gameRunning) return;
-            switch(e.key) {
-                case 'ArrowLeft': if (player.lane > 0) player.lane--; break;
-                case 'ArrowRight': if (player.lane < 2) player.lane++; break;
-                case 'ArrowUp':
-                    if (!player.jumping) {
-                        player.jumping = true;
-                        player.vy = -19;
-                        playSound('jump');
-                    }
-                    break;
-                case ' ': togglePause(); break;
-            }
-        });
 
         function togglePause() {
             if (!gameRunning) return;
@@ -401,11 +497,51 @@
             }
         }
 
+        // Controls
+        document.addEventListener('keydown', e => {
+            if (!gameRunning) return;
+            switch(e.key) {
+                case 'ArrowLeft': if (player.lane > 0) player.lane--; break;
+                case 'ArrowRight': if (player.lane < 2) player.lane++; break;
+                case 'ArrowUp':
+                    if (!player.jumping) {
+                        player.jumping = true;
+                        player.vy = -19;
+                        createSparkBurst(LANES[player.lane], 320 + player.y, '#0ff', 15);
+                        playSound('jump');
+                    }
+                    break;
+                case ' ':
+                case 'p':
+                case 'P': togglePause(); break;
+            }
+        });
+
+        let startX = 0, startY = 0;
+        canvas.addEventListener('touchstart', e => {
+            startX = e.changedTouches[0].screenX;
+            startY = e.changedTouches[0].screenY;
+        });
+        canvas.addEventListener('touchend', e => {
+            if (!gameRunning || paused) return;
+            const dx = e.changedTouches[0].screenX - startX;
+            const dy = e.changedTouches[0].screenY - startY;
+            if (Math.abs(dx) > 45) {
+                if (dx > 0 && player.lane < 2) player.lane++;
+                else if (dx < 0 && player.lane > 0) player.lane--;
+            } else if (dy < -55 && !player.jumping) {
+                player.jumping = true;
+                player.vy = -19;
+                createSparkBurst(LANES[player.lane], 320, '#0ff', 15);
+                playSound('jump');
+            }
+        });
+
         window.onload = () => {
             draw();
             overlay.style.display = 'flex';
-            title.textContent = "BILLY'S SHIRTS";
-            subtitle.textContent = "Ready to fold?";
+            title.textContent = "NEON DASH";
+            subtitle.textContent = "Ready?";
         };
     </script>
 </body>
