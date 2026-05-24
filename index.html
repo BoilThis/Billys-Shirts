@@ -26,7 +26,6 @@
             color: #000;
             font-size: 1.8rem;
             font-weight: 700;
-            letter-spacing: 2px;
         }
         #game-container {
             position: relative;
@@ -36,7 +35,7 @@
             box-shadow: 0 0 60px #ff0;
             overflow: hidden;
         }
-        canvas { display: block; background: #1a1a1a; }
+        canvas { display: block; background: #111; }
         .overlay {
             position: absolute; top: 50%; left: 50%;
             transform: translate(-50%, -50%);
@@ -49,7 +48,6 @@
             flex-direction: column;
             gap: 22px;
             min-width: 320px;
-            box-shadow: 0 0 70px #ff0;
         }
         button {
             background: linear-gradient(135deg, #ff0, #f80);
@@ -62,14 +60,9 @@
             cursor: pointer;
             min-height: 72px;
         }
-        .score, .highscore, .milestone {
-            position: absolute; background: rgba(0,0,0,0.8);
-            padding: 10px 24px; border-radius: 999px;
-            font-weight: 700; border: 3px solid #ff0;
-        }
-        .score { top: 22px; left: 22px; font-size: 1.4rem; color: #ff0; }
+        .score, .highscore { position: absolute; background: rgba(0,0,0,0.8); padding: 10px 24px; border-radius: 999px; font-weight: 700; border: 3px solid #ff0; }
+        .score { top: 22px; left: 22px; font-size: 1.45rem; color: #ff0; }
         .highscore { top: 22px; right: 22px; font-size: 1.1rem; color: #0ff; }
-        .milestone { top: 90px; left: 50%; transform: translateX(-50%); background: rgba(255,220,0,0.35); color: #ff0; font-size: 1.5rem; }
         .instructions { position: absolute; bottom: 22px; text-align: center; font-size: 1rem; color: #aaa; width: 100%; }
     </style>
 </head>
@@ -79,19 +72,17 @@
     <div id="game-container">
         <div class="score" id="score">0m</div>
         <div class="highscore" id="highscore">HI 0m</div>
-        <div class="milestone" id="milestone"></div>
         <canvas id="canvas" width="520" height="520"></canvas>
         
         <div id="overlay" class="overlay">
             <h2 id="title">BILLY'S SHIRTS</h2>
-            <div id="subtitle" style="color:#ff0; font-size:1.55rem;">Ready to run the factory?</div>
+            <div id="subtitle" style="color:#ff0; font-size:1.55rem;">Run the factory!</div>
             <button onclick="startGame()">START RUNNING!</button>
         </div>
     </div>
 
     <div class="instructions">
-        ↑ JUMP &nbsp;&nbsp;&nbsp; ← → CHANGE LANE &nbsp;&nbsp;&nbsp; SPACE = PAUSE<br>
-        Collect flying shirts • Avoid boxes & machines
+        ↑ JUMP &nbsp;&nbsp;&nbsp; ← → SWITCH LANE &nbsp;&nbsp;&nbsp; SPACE = PAUSE
     </div>
 
     <script>
@@ -99,7 +90,6 @@
         const ctx = canvas.getContext('2d');
         const scoreEl = document.getElementById('score');
         const highEl = document.getElementById('highscore');
-        const milestoneEl = document.getElementById('milestone');
         const overlay = document.getElementById('overlay');
         const title = document.getElementById('title');
         const subtitle = document.getElementById('subtitle');
@@ -123,16 +113,14 @@
             }
             if (type === 'collect') {
                 const notes = [720, 920, 1240];
-                notes.forEach((f,i) => {
-                    setTimeout(() => {
-                        const osc = audioContext.createOscillator();
-                        osc.type = 'triangle'; osc.frequency.value = f;
-                        const gain = audioContext.createGain();
-                        gain.gain.setValueAtTime(0.4, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
-                        osc.connect(gain).connect(audioContext.destination);
-                        osc.start(now + i*0.04); osc.stop(now + i*0.04 + 0.5);
-                    }, i*35);
-                });
+                notes.forEach((f,i) => setTimeout(() => {
+                    const osc = audioContext.createOscillator();
+                    osc.type = 'triangle'; osc.frequency.value = f;
+                    const gain = audioContext.createGain();
+                    gain.gain.setValueAtTime(0.4, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.45);
+                    osc.connect(gain).connect(audioContext.destination);
+                    osc.start(now + i*0.04); osc.stop(now + i*0.04 + 0.5);
+                }, i*35));
             }
             if (type === 'crash') {
                 const noise = audioContext.createBufferSource();
@@ -149,60 +137,67 @@
             }
         }
 
-        let player = { lane: 1, y: 0, vy: 0, jumping: false };
-        let obstacles = [], shirts = [], powerups = [], particles = [];
-        let distance = 0, speed = 5.8;   // Slower start
+        let player = { lane: 1, y: 0, vy: 0, jumping: false, runFrame: 0 };
+        let obstacles = [], shirts = [], particles = [];
+        let distance = 0, speed = 6;
         let gameRunning = false, paused = false;
         let gameInterval;
         let highScore = localStorage.getItem('billyShirtsHigh') || 0;
-        let combo = 0;
 
-        const LANES = [120, 260, 400];
+        const LANES = [140, 260, 380];
 
         class Particle {
             constructor(x, y, color) {
                 this.x = x; this.y = y;
-                this.vx = (Math.random() - 0.5) * 11;
-                this.vy = (Math.random() - 0.5) * 11 - 2;
-                this.life = 38; this.maxLife = 38;
-                this.color = color; this.size = 4 + Math.random() * 5;
+                this.vx = (Math.random() - 0.5) * 10;
+                this.vy = (Math.random() - 0.5) * 10 - 3;
+                this.life = 35; this.maxLife = 35;
+                this.color = color; this.size = 5;
             }
-            update() { this.x += this.vx; this.y += this.vy; this.vy += 0.25; this.life--; this.size *= 0.97; }
+            update() { this.x += this.vx; this.y += this.vy; this.vy += 0.3; this.life--; this.size *= 0.96; }
             draw() {
                 ctx.globalAlpha = this.life / this.maxLife;
                 ctx.fillStyle = this.color;
-                ctx.shadowBlur = 15; ctx.shadowColor = this.color;
+                ctx.shadowBlur = 12; ctx.shadowColor = this.color;
                 ctx.fillRect(this.x, this.y, this.size, this.size);
             }
         }
 
-        function createExplosion(x, y, color, count = 40) {
+        function createExplosion(x, y, color, count = 35) {
             for (let i = 0; i < count; i++) particles.push(new Particle(x, y, color));
         }
 
         function spawnObstacle() {
-            if (Math.random() < 0.07) {   // Much fewer obstacles
-                obstacles.push({ lane: Math.floor(Math.random()*3), x: 520, type: Math.random()<0.5?'box':'machine' });
+            if (Math.random() < 0.08) {
+                obstacles.push({ lane: Math.floor(Math.random()*3), x: 520, type: Math.random() < 0.5 ? 'box' : 'machine' });
             }
         }
 
         function spawnShirt() {
-            if (Math.random() < 0.48) shirts.push({ lane: Math.floor(Math.random()*3), x: 520, color: ['#f00','#0f0','#00f','#ff0'][Math.floor(Math.random()*4)] });
-        }
-
-        function spawnPowerup() {
-            if (Math.random() < 0.16) powerups.push({ lane: Math.floor(Math.random()*3), x: 520, type: Math.random()<0.5?'speed':'shield' });
+            if (Math.random() < 0.55) {
+                shirts.push({ lane: Math.floor(Math.random()*3), x: 520, color: ['#f00','#0f0','#00f','#ff0'][Math.floor(Math.random()*4)] });
+            }
         }
 
         function drawBackground() {
-            ctx.fillStyle = '#1a1a1a'; ctx.fillRect(0,0,520,520);
-            ctx.fillStyle = '#333'; ctx.fillRect(0,380,520,80);
-            ctx.strokeStyle = '#666'; ctx.lineWidth = 12;
-            const off = (Date.now() / 8 % 90);
-            for (let i = -100; i < 700; i += 90) {
+            ctx.fillStyle = '#1a1a2e'; ctx.fillRect(0,0,520,520);
+            
+            // Factory walls
+            ctx.fillStyle = '#222';
+            ctx.fillRect(0, 0, 520, 380);
+            
+            // Conveyor floor
+            ctx.fillStyle = '#333';
+            ctx.fillRect(0, 380, 520, 140);
+            
+            // Scrolling lines
+            const scroll = (Date.now() / 6) % 80;
+            ctx.strokeStyle = '#555';
+            ctx.lineWidth = 8;
+            for (let i = -100; i < 700; i += 80) {
                 ctx.beginPath();
-                ctx.moveTo(i + off, 410);
-                ctx.lineTo(i + off + 60, 410);
+                ctx.moveTo(i + scroll, 400);
+                ctx.lineTo(i + scroll + 50, 400);
                 ctx.stroke();
             }
         }
@@ -210,21 +205,40 @@
         function drawPlayer() {
             const x = LANES[player.lane];
             const y = 340 + player.y;
-            ctx.shadowBlur = 30; ctx.shadowColor = '#ff0';
-            ctx.fillStyle = '#28a'; ctx.fillRect(x-22, y-48, 44, 52);
-            ctx.fillStyle = '#fdb'; ctx.beginPath(); ctx.arc(x, y-62, 16, 0, Math.PI*2); ctx.fill();
-            ctx.fillStyle = '#f00'; ctx.fillRect(x-19, y-78, 38, 12);
+            const bob = player.jumping ? 0 : Math.sin(Date.now()/100) * 3;
+            
+            ctx.shadowBlur = 25; ctx.shadowColor = '#ff0';
+            
+            // Legs
+            ctx.fillStyle = '#28a';
+            ctx.fillRect(x-18, y-20 + bob, 12, 35);
+            ctx.fillRect(x+6, y-20 + bob, 12, 35);
+            
+            // Body
+            ctx.fillRect(x-22, y-55, 44, 40);
+            
+            // Head
+            ctx.fillStyle = '#fdb';
+            ctx.beginPath(); ctx.arc(x, y-68, 17, 0, Math.PI*2); ctx.fill();
+            
+            // Hat
+            ctx.fillStyle = '#f00';
+            ctx.fillRect(x-19, y-82, 38, 14);
         }
 
         function drawObstacles() {
             obstacles.forEach(o => {
                 const x = o.x;
                 if (o.type === 'box') {
-                    ctx.fillStyle = '#842'; ctx.fillRect(x-30,340,60,65);
-                    ctx.fillStyle = '#ff0'; ctx.fillRect(x-25,350,50,8);
+                    ctx.fillStyle = '#842';
+                    ctx.fillRect(x-28, 360, 56, 50);
+                    ctx.fillStyle = '#ff0';
+                    ctx.fillRect(x-25, 365, 50, 8);
                 } else {
-                    ctx.fillStyle = '#555'; ctx.fillRect(x-35,310,70,110);
-                    ctx.fillStyle = '#f00'; ctx.fillRect(x-28,325,56,20);
+                    ctx.fillStyle = '#555';
+                    ctx.fillRect(x-32, 320, 64, 90);
+                    ctx.fillStyle = '#f00';
+                    ctx.fillRect(x-25, 335, 50, 18);
                 }
             });
         }
@@ -234,91 +248,54 @@
                 if (s.collected) return;
                 const x = s.x;
                 ctx.fillStyle = s.color;
-                ctx.fillRect(x-18,250,36,28);
+                ctx.fillRect(x-18, 260, 36, 32);
                 ctx.fillStyle = '#fff';
-                ctx.fillRect(x-18,250,36,8);
-            });
-        }
-
-        function drawPowerups() {
-            powerups.forEach(p => {
-                const x = p.x;
-                ctx.shadowBlur = 35; ctx.shadowColor = p.type==='speed'?'#f80':'#0ff';
-                ctx.fillStyle = p.type==='speed'?'#f80':'#0ff';
-                ctx.fillRect(x-20,245,40,32);
-                ctx.fillStyle = '#000';
-                ctx.font = 'bold 20px sans-serif';
-                ctx.textAlign = 'center';
-                ctx.fillText(p.type==='speed'?'⚡':'🛡️', x, 268);
+                ctx.fillRect(x-18, 260, 36, 10);
             });
         }
 
         function update() {
             if (!gameRunning || paused) return;
 
-            // Gentler difficulty curve
-            if (distance > 600) speed = 7.2;
-            if (distance > 1400) speed = 8.5;
-            if (distance > 2500) speed = 10.2;
+            if (distance > 600) speed = 7.4;
+            if (distance > 1400) speed = 8.8;
+            if (distance > 2400) speed = 10.5;
 
-            distance += speed / 3.8;
+            distance += speed / 4;
             scoreEl.textContent = Math.floor(distance) + 'm';
 
             obstacles.forEach(o => o.x -= speed);
             shirts.forEach(s => s.x -= speed);
-            powerups.forEach(p => p.x -= speed);
 
             obstacles = obstacles.filter(o => o.x > -80);
             shirts = shirts.filter(s => s.x > -50);
-            powerups = powerups.filter(p => p.x > -50);
 
             if (player.jumping) {
-                player.vy += 0.85;
+                player.vy += 0.9;
                 player.y += player.vy;
                 if (player.y >= 0) { player.y = 0; player.jumping = false; player.vy = 0; }
             }
 
-            if (Math.random() < 0.07) spawnObstacle();   // Much easier!
-            if (Math.random() < 0.48) spawnShirt();
-            if (Math.random() < 0.16) spawnPowerup();
+            if (Math.random() < 0.08) spawnObstacle();
+            if (Math.random() < 0.52) spawnShirt();
 
             const px = LANES[player.lane];
             obstacles.forEach(o => {
-                if (o.x < px + 32 && o.x + 55 > px - 32 && player.y > -30) {
-                    createExplosion(px, 355, '#f44', 65);
+                if (o.x < px + 32 && o.x + 50 > px - 32 && player.y > -35) {
+                    createExplosion(px, 370, '#f44', 60);
                     playSound('crash');
                     gameOver();
                 }
             });
 
             shirts.forEach(s => {
-                if (!s.collected && s.x < px + 30 && s.x + 25 > px - 30 && Math.abs(player.y) < 50) {
+                if (!s.collected && s.x < px + 32 && s.x + 25 > px - 32 && Math.abs(player.y) < 55) {
                     s.collected = true;
-                    combo++;
-                    createExplosion(s.x, 260, s.color, 38);
+                    createExplosion(s.x, 265, s.color, 35);
                     playSound('collect');
-                    distance += 28;
+                    distance += 32;
                 }
             });
-
-            powerups.forEach((p,i) => {
-                if (p.x < px + 30 && p.x + 30 > px - 30 && Math.abs(player.y) < 50) {
-                    powerups.splice(i,1);
-                    createExplosion(p.x, 255, p.type==='speed'?'#f80':'#0ff', 45);
-                    distance += 90;
-                }
-            });
-
-            if (Math.floor(distance) % 500 === 0 && distance > 100) {
-                milestoneEl.textContent = `${Math.floor(distance)}m STREAK!`;
-                milestoneEl.style.opacity = 1;
-                setTimeout(() => milestoneEl.style.opacity = 0, 1600);
-            }
-
-            for (let i = particles.length-1; i >= 0; i--) {
-                particles[i].update();
-                if (particles[i].life <= 0) particles.splice(i,1);
-            }
 
             draw();
         }
@@ -328,9 +305,10 @@
             drawBackground();
             drawObstacles();
             drawShirts();
-            drawPowerups();
             drawPlayer();
-            particles.forEach(p => p.draw());
+
+            particles.forEach(p => { p.update(); p.draw(); });
+            for (let i = particles.length-1; i >= 0; i--) if (particles[i].life <= 0) particles.splice(i,1);
         }
 
         function gameOver() {
@@ -342,15 +320,15 @@
                 highEl.textContent = `HI ${highScore}m`;
             }
             title.textContent = "FACTORY SHUTDOWN";
-            subtitle.innerHTML = `You folded <b>${Math.floor(distance)}m</b> of shirts!`;
+            subtitle.innerHTML = `You folded <b>${Math.floor(distance)}m</b>!`;
             overlay.style.display = 'flex';
         }
 
         function startGame() {
             initAudio();
             overlay.style.display = 'none';
-            distance = 0; speed = 5.8;
-            obstacles = []; shirts = []; powerups = []; particles = [];
+            distance = 0; speed = 6;
+            obstacles = []; shirts = []; particles = [];
             player = { lane: 1, y: 0, vy: 0, jumping: false };
             scoreEl.textContent = '0m';
             gameRunning = true; paused = false;
