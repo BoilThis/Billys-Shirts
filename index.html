@@ -151,7 +151,7 @@
 
         let player = { lane: 1, y: 0, vy: 0, jumping: false };
         let obstacles = [], shirts = [], powerups = [], particles = [];
-        let distance = 0, speed = 6.2;
+        let distance = 0, speed = 5.8;   // Slower start
         let gameRunning = false, paused = false;
         let gameInterval;
         let highScore = localStorage.getItem('billyShirtsHigh') || 0;
@@ -181,7 +181,9 @@
         }
 
         function spawnObstacle() {
-            if (Math.random() < 0.6) obstacles.push({ lane: Math.floor(Math.random()*3), x: 520, type: Math.random()<0.5?'box':'machine' });
+            if (Math.random() < 0.07) {   // Much fewer obstacles
+                obstacles.push({ lane: Math.floor(Math.random()*3), x: 520, type: Math.random()<0.5?'box':'machine' });
+            }
         }
 
         function spawnShirt() {
@@ -254,9 +256,10 @@
         function update() {
             if (!gameRunning || paused) return;
 
-            if (distance > 500) speed = 7.8;
-            if (distance > 1200) speed = 9.5;
-            if (distance > 2200) speed = 11.8;
+            // Gentler difficulty curve
+            if (distance > 600) speed = 7.2;
+            if (distance > 1400) speed = 8.5;
+            if (distance > 2500) speed = 10.2;
 
             distance += speed / 3.8;
             scoreEl.textContent = Math.floor(distance) + 'm';
@@ -275,7 +278,7 @@
                 if (player.y >= 0) { player.y = 0; player.jumping = false; player.vy = 0; }
             }
 
-            if (Math.random() < 0.14) spawnObstacle();
+            if (Math.random() < 0.07) spawnObstacle();   // Much easier!
             if (Math.random() < 0.48) spawnShirt();
             if (Math.random() < 0.16) spawnPowerup();
 
@@ -346,7 +349,7 @@
         function startGame() {
             initAudio();
             overlay.style.display = 'none';
-            distance = 0; speed = 6.2;
+            distance = 0; speed = 5.8;
             obstacles = []; shirts = []; powerups = []; particles = [];
             player = { lane: 1, y: 0, vy: 0, jumping: false };
             scoreEl.textContent = '0m';
